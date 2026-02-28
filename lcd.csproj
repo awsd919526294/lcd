@@ -63,6 +63,11 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="core\BrickLibrary.cs" />
+    <Compile Include="core\Direction.cs" />
+    <Compile Include="core\IntPoint.cs" />
+    <Compile Include="core\IPixelHost.cs" />
+    <Compile Include="core\MovingShape.cs" />
     <Compile Include="core\Screen.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
