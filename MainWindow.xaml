@@ -1,0 +1,91 @@
+﻿
+<Window x:Class="lcd.MainWindow"
+		xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		Title="老式游戏机模拟器" Height="520" Width="380" Background="#98a68a">
+	<DockPanel>
+		<!-- 顶部菜单栏，用于程序扩展功能，贴在窗口顶部 -->
+		<Menu DockPanel.Dock="Top">
+			<MenuItem Header="_游戏">
+				<MenuItem Header="开始(_S)"/>
+				<MenuItem Header="暂停(_P)"/>
+				<Separator/>
+				<MenuItem Header="退出(_X)"/>
+			</MenuItem>
+			<MenuItem Header="_视图">
+				<MenuItem Header="复位布局(_R)"/>
+			</MenuItem>
+			<MenuItem Header="_帮助">
+				<MenuItem Header="关于(_A)"/>
+			</MenuItem>
+		</Menu>
+
+		<Grid Margin="20">
+			<Grid.RowDefinitions>
+				<!-- 顶部信息条行 -->
+				<RowDefinition Height="Auto"/>
+				<!-- 主内容区域行（屏幕 + 右侧信息区） -->
+				<RowDefinition Height="*"/>
+			</Grid.RowDefinitions>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="Auto"/>
+				<ColumnDefinition Width="*"/>
+			</Grid.ColumnDefinitions>
+	
+			<!-- 顶部信息条，在屏幕外部，占用整行 -->
+			<StackPanel Grid.Row="0" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,5,0,10">
+			<TextBlock Text="LEVEL: 01" FontFamily="Consolas" FontWeight="Bold" FontSize="18" Margin="0,0,20,0"/>
+			<TextBlock Text="HI-SCORE: 9999" FontFamily="Consolas" FontWeight="Bold" FontSize="18"/>
+		</StackPanel>
+
+		<!-- 左侧：游戏机屏幕，尺寸与原来一致，只负责显示像素点 -->
+		<Border Grid.Row="1" Grid.Column="0" Background="#98a68a" CornerRadius="10" Padding="15" BorderBrush="#222" BorderThickness="10" HorizontalAlignment="Center" VerticalAlignment="Top">
+			<Border BorderBrush="#444" BorderThickness="3" Background="#8b9a7d">
+				<ItemsControl x:Name="PixelGrid">
+					<ItemsControl.ItemsPanel>
+						<ItemsPanelTemplate>
+							<UniformGrid Columns="10" Rows="20"/>
+						</ItemsPanelTemplate>
+					</ItemsControl.ItemsPanel>
+					<ItemsControl.ItemTemplate>
+						<DataTemplate>
+							<Grid Margin="0.5">
+								<Rectangle Fill="#15000000" Width="18" Height="18" RadiusX="1" RadiusY="1"/>
+								<Rectangle Width="18" Height="18" RadiusX="1" RadiusY="1">
+									<Rectangle.Style>
+										<Style TargetType="Rectangle">
+											<Setter Property="Opacity" Value="0"/>
+											<Style.Triggers>
+												<DataTrigger Binding="{Binding IsActive}" Value="True">
+													<Setter Property="Fill" Value="#CC000000"/>
+													<Setter Property="Opacity" Value="1"/>
+												</DataTrigger>
+											</Style.Triggers>
+										</Style>
+									</Rectangle.Style>
+								</Rectangle>
+							</Grid>
+						</DataTemplate>
+					</ItemsControl.ItemTemplate>
+				</ItemsControl>
+			</Border>
+		</Border>
+
+		<!-- 右侧：分数、速度、预览等辅助信息区，屏幕外部扩展 -->
+		<StackPanel Grid.Row="1" Grid.Column="1" Width="110" Margin="10,0,0,0" VerticalAlignment="Top">
+			<GroupBox Header="SCORE" Margin="0,0,0,10">
+				<TextBlock x:Name="TxtScore" Text="{Binding Score}" FontSize="20" HorizontalAlignment="Center" FontWeight="Bold"/>
+			</GroupBox>
+            <GroupBox Header="LEVEL" Margin="0,0,0,10">
+                <TextBlock x:Name="TxtLevel" Text="{Binding Level}" FontSize="20" HorizontalAlignment="Center" FontWeight="Bold"/>
+            </GroupBox>
+            <GroupBox Header="SPEED" Margin="0,0,0,10">
+				<TextBlock x:Name="TxtSpeed" Text="{Binding SpeedLevel}" FontSize="20" HorizontalAlignment="Center" FontWeight="Bold"/>
+			</GroupBox>
+			<GroupBox Header="NEXT" Height="80">
+				<UniformGrid Columns="4" Rows="4" x:Name="NextPieceGrid"/>
+			</GroupBox>
+		</StackPanel>
+		</Grid>
+	</DockPanel>
+</Window>
