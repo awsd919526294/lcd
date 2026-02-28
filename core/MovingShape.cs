@@ -7,7 +7,7 @@ namespace lcd.core
     /// </summary>
     public class MovingShape
     {
-        public IntPoint[] Offsets { get; }
+        public IntPoint[] Offsets { get; set; }
         public IntPoint Center { get; set; }
 
         /// <summary>

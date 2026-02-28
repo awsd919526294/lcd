@@ -82,7 +82,8 @@ namespace lcd
 
             // 初始化界面显示的分数与速度
             Score = 0;
-            SpeedLevel = 1;
+            SpeedLevel = 10;
+            Level = 1;
 
             // 1. 初始化 200 个像素点
             for (int i = 0; i < 200; i++)
@@ -95,33 +96,16 @@ namespace lcd
             // 2. 初始化底层 Screen，并启动一个简单的示例动画
             StartSimpleAnimation();
         }
+        int index = 0;
 
         private void StartSimpleAnimation()
         {
-            // 旧的基于 DispatcherTimer 的实现，保留在注释中，方便回退：
-            //_screen = new Screen(this);
-            //_car = new MovingShape(
-            //    BrickLibrary.EnermyTank,
-            //    new IntPoint(4, -4),
-            //    new IntPoint(0, 1),
-            //    1);
-            //_screen.AddShape(_car);
-            //_timer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(500 / _speedLevel) };
-            //_timer.Tick += (s, e) =>
-            //{
-            //    _screen.Step();
-            //    if (IsCarOffScreenBottom())
-            //    {
-            //        _car.Center = new IntPoint(4, -4);
-            //    }
-            //};
-            //_timer.Start();
-
             // 新实现：使用 CompositionTarget.Rendering + Stopwatch，实现固定刷新率驱动，
             // 按 500 / _speedLevel 毫秒作为一次“逻辑移动”的时间间隔。
             _screen = new Screen(this);
             _car = new MovingShape(
-                BrickLibrary.EnermyTank,
+                // 初始使用第一个字符，后续在下落离开屏幕后再依次切换
+                BrickLibrary.getChar(index),
                 new IntPoint(4, -4),  // 初始中心位置（从屏幕上方逐渐进入）
                 new IntPoint(0, 1),   // 向下移动
                 1                     // 每次 Step 移动 1 格
@@ -150,7 +134,6 @@ namespace lcd
 
             // 约定：移动一次消耗 500 / _speedLevel 毫秒（_speedLevel > 0）
             double moveInterval = 500.0 / _speedLevel;
-
             // 累积时间足够时，可能需要执行多步逻辑，以避免丢帧
             while (_accumulatedMs >= moveInterval)
             {
@@ -159,7 +142,10 @@ namespace lcd
                 _screen.Step();
                 if (IsCarOffScreenBottom())
                 {
+                    // 每次完全离开屏幕后再切换到下一个字符，保证按顺序逐个显示
+                    index++;
                     _car.Center = new IntPoint(4, -4); // 重置到屏幕上方，继续循环
+                    _car.Offsets = BrickLibrary.getChar(index);
                 }
             }
         }
