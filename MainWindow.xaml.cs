@@ -82,7 +82,7 @@ namespace lcd
 
             // 初始化界面显示的分数与速度
             Score = 0;
-            SpeedLevel = 10;
+            SpeedLevel = 15;
             Level = 1;
 
             // 1. 初始化 200 个像素点
@@ -106,8 +106,8 @@ namespace lcd
             _car = new MovingShape(
                 // 初始使用第一个字符，后续在下落离开屏幕后再依次切换
                 BrickLibrary.getChar(index),
-                new IntPoint(4, -4),  // 初始中心位置（从屏幕上方逐渐进入）
-                new IntPoint(0, 1),   // 向下移动
+                new IntPoint(4, 20),  // 初始中心位置（从屏幕下方逐渐进入）
+                new IntPoint(0, -1),   // 向上移动
                 1                     // 每次 Step 移动 1 格
             );
             _screen.AddShape(_car);
@@ -140,11 +140,11 @@ namespace lcd
                 _accumulatedMs -= moveInterval;
 
                 _screen.Step();
-                if (IsCarOffScreenBottom())
+                if (IsOffScreenAbove())
                 {
                     // 每次完全离开屏幕后再切换到下一个字符，保证按顺序逐个显示
                     index++;
-                    _car.Center = new IntPoint(4, -4); // 重置到屏幕上方，继续循环
+                    _car.Center = new IntPoint(4, 20); // 重置到屏幕上方，继续循环
                     _car.Offsets = BrickLibrary.getChar(index);
                 }
             }
@@ -180,6 +180,26 @@ namespace lcd
 
             // 当整辆车的最上方一行都已经在屏幕底部之下时，视为完全离开屏幕
             return topY > PixelHeight - 1 && bottomY > PixelHeight - 1;
+        }
+
+        private bool IsOffScreenAbove()
+        {
+            if (_car == null)
+            {
+                return false;
+            }
+            // 计算形状内部最小 Y 偏移，用于推算实际占用的行范围
+            int minOffsetY = int.MaxValue;
+            foreach (var offset in _car.Offsets)
+            {
+                if (offset.Y < minOffsetY)
+                {
+                    minOffsetY = offset.Y;
+                }
+            }
+            int topY = _car.Center.Y + minOffsetY;
+            // 当整辆车的最下方一行都已经在屏幕上方之上时，视为完全离开屏幕
+            return topY < 0;
         }
 
         #region IPixelHost 实现

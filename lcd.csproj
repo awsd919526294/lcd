@@ -59,6 +59,12 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Compile Include="api\GameBase.cs" />
+    <Compile Include="api\GameButton.cs" />
+    <Compile Include="api\GameOverEventArgs.cs" />
+    <Compile Include="api\IGame.cs" />
+    <Compile Include="api\IGameFactory.cs" />
+    <Compile Include="api\ScoreChangedEventArgs.cs" />
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -100,6 +106,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="modules\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
